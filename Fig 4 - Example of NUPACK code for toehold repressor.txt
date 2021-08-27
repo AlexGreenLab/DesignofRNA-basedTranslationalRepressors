@@ -1,0 +1,35 @@
+#Example Nupack code for toehold repressor
+material = rna1999 # specify RNA energy parameters, values = rna1995 or rna1999
+# number of designs, values = 1 to 10
+trials = 10
+
+#The GGG sequence is only required when using T7 promoter. If there is a required sequence for other promoters, design with that sequence.
+domain preG = GGG
+domain a = N15
+domain b = N18
+domain c = N12
+# this cp_star domain specifies the top right portion of the switch stem. It is not fully complementary to domain c.
+domain cp_star = N12 
+# this bp_star domain specifies the bottom right portion of the switch stem. It is not fully complementary to domain b.
+domain bp_star = N18 
+
+#The first 6 nt in this bpp domain specifies the 6-nt spacer between RBS and AUG that is required for efficient translation.
+domain bpp = N6 AUG N9 #this domain is not fully complementary to bp_star due to the start codon bulge
+domain loop1 = N9
+
+#AGAGGAGA sequence is the RBS sequence to allow efficient translation.
+domain loop2 = N4 AGAGGAGA
+
+#Common linker sequence from Green et al.[1]
+domain linker = AACCUGGCGGCAGCGCAAAAG 
+
+#target switch structure
+structure Tr = U3 U45
+structure Sw = U3 U15 D7 (U1 D7 (U1 D7 (U1 D6 (U9) U1) U1) U1) U12 U18 U21
+structure Sw_Tr = U3 D45 (U9 U12 D9 (U3 D6 U12 U3) U21 + U3)
+
+Tr.seq = preG c* b* a*
+Sw.seq = preG a b c loop1 cp_star bp_star loop2 bpp linker
+Sw_Tr.seq = preG a b c loop1 cp_star bp_star loop2 bpp linker preG c* b* a*
+
+prevent = AAAA, CCCC, GGGG, UUUU, KKKKKK, MMMMMM, RRRRRR, SSSSSS, WWWWWW, YYYYYY
